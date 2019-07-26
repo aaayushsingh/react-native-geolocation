@@ -165,6 +165,7 @@ const Geolocation = {
     );
 
     RNCGeolocation.getLocationAuthorizationLevel(
+      {},
       permission_success,
       permission_error || logError,
     );
