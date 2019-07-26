@@ -344,19 +344,20 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
                           useSignificantChanges:options.useSignificantChanges];
 }
 
-RCT_EXPORT_METHOD(getLocationAuthorizationLevel:(RNCGeolocationOptions)options
+RCT_EXPORT_METHOD(getLocationAuthorizationLevel:()
                   withSuccessCallback:(RCTResponseSenderBlock)authSuccessBlock
                   errorCallback:(RCTResponseSenderBlock)authErrorBlock)
 {
   int status = [CLLocationManager authorizationStatus];
-  if (status == kCLAuthorizationStatusAuthorizedAlways) {
-    authSuccessBlock(@{
-      @"access": @(status)
-    });
-    return;
-  }
+  // if (status == kCLAuthorizationStatusAuthorizedAlways) {
+  //   authSuccessBlock(@{
+  //     @"access": @(status)
+  //   });
+  //   return;
+  // }
   authErrorBlock(@[
-                   RNCPositionError(RNCPositionErrorDenied, nil)
+                   RNCPositionError(RNCPositionErrorDenied, @"Access level not set to always."),
+                   @{@"status": @(status)}
                    ]);
       return;
 }

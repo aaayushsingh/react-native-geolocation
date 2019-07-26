@@ -57,11 +57,7 @@ const Geolocation = {
   stopObserving: function() {
     throw new Error('method not supported by the browser');
   },
-  getLocationAuthorizationLevel: function(
-    options: any,
-    success: Function,
-    error: Function,
-  ) {
+  getLocationAuthorizationLevel: function(success: Function, error: Function) {
     if (typeof success !== 'function') {
       throw new Error('success callback must be a function');
     }
