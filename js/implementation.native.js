@@ -164,7 +164,7 @@ const Geolocation = {
       'Must provide a valid permission_success callback.',
     );
 
-    RNCGeolocation.getCurrentPosition(
+    RNCGeolocation.getLocationAuthorizationLevel(
       permission_success,
       permission_error || logError,
     );
