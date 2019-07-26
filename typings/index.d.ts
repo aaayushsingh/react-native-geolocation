@@ -71,6 +71,8 @@ export interface GeolocationStatic {
   requestAuthorization(): void;
 
   setRNConfiguration(config: GeolocationConfiguration): void;
+
+  getLocationAuthorizationLevel(options: any, success: any, error: any): void;
 }
 
 declare let Geolocation: GeolocationStatic;

@@ -342,12 +342,14 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
                           useSignificantChanges:options.useSignificantChanges];
 }
 
-RCT_EXPORT_METHOD(getLocationAuthorizationLevel
+RCT_EXPORT_METHOD(getLocationAuthorizationLevel:(RNCGeolocationOptions)options
                   withSuccessCallback:(RCTResponseSenderBlock)successBlock
                   errorCallback:(RCTResponseSenderBlock)errorBlock)
 {
   if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
-    successBlock(@[true]);
+    successBlock(@[
+      @"access": @"true"
+    ]);
     return;
   }
   errorBlock(@[

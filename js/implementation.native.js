@@ -165,6 +165,7 @@ const Geolocation = {
     );
 
     RNCGeolocation.getCurrentPosition(
+      {},
       permission_success,
       permission_error || logError,
     );
