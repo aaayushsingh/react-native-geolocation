@@ -350,9 +350,9 @@ RCT_EXPORT_METHOD(getLocationAuthorizationLevel:(RNCGeolocationOptions)options
 {
   int status = [CLLocationManager authorizationStatus];
   if (status == kCLAuthorizationStatusAuthorizedAlways) {
-    authSuccessBlock(@{
-      @"access": @(status)
-    });
+    authSuccessBlock(@[
+      @{@"access": @"true"}
+    ]);
     return;
   }
   authErrorBlock(@[
