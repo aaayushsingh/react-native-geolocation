@@ -110,6 +110,8 @@ static NSDictionary<NSString *, id> *RNCPositionError(RNCPositionErrorCode code,
 
 @property (nonatomic, copy) RCTResponseSenderBlock successBlock;
 @property (nonatomic, copy) RCTResponseSenderBlock errorBlock;
+@property (nonatomic, copy) RCTResponseSenderBlock authSuccessBlock;
+@property (nonatomic, copy) RCTResponseSenderBlock authErrorBlock;
 @property (nonatomic, assign) RNCGeolocationOptions options;
 @property (nonatomic, strong) NSTimer *timeoutTimer;
 
