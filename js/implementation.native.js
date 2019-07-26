@@ -155,6 +155,20 @@ const Geolocation = {
       subscriptions = [];
     }
   },
+  getLocationAuthorizationLevel: function(
+    permission_success: Function,
+    permission_error: Function,
+  ) {
+    invariant(
+      typeof permission_success === 'function',
+      'Must provide a valid permission_success callback.',
+    );
+
+    RNCGeolocation.getCurrentPosition(
+      permission_success,
+      permission_error || logError,
+    );
+  },
 };
 
 module.exports = Geolocation;

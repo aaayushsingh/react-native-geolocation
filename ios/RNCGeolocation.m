@@ -342,6 +342,20 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
                           useSignificantChanges:options.useSignificantChanges];
 }
 
+RCT_EXPORT_METHOD(getLocationAuthorizationLevel
+                  withSuccessCallback:(RCTResponseSenderBlock)successBlock
+                  errorCallback:(RCTResponseSenderBlock)errorBlock)
+{
+  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
+    successBlock(@[true]);
+    return;
+  }
+  errorBlock(@[
+                   RNCPositionError(RNCPositionErrorDenied, nil)
+                   ]);
+      return;
+}
+
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager
