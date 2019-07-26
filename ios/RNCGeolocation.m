@@ -343,16 +343,17 @@ RCT_EXPORT_METHOD(getCurrentPosition:(RNCGeolocationOptions)options
 }
 
 RCT_EXPORT_METHOD(getLocationAuthorizationLevel:(RNCGeolocationOptions)options
-                  withSuccessCallback:(RCTResponseSenderBlock)successBlock
-                  errorCallback:(RCTResponseSenderBlock)errorBlock)
+                  withSuccessCallback:(RCTResponseSenderBlock)authSuccessBlock
+                  errorCallback:(RCTResponseSenderBlock)authErrorBlock)
 {
-  if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
-    successBlock(@[
-      @"access": @"true"
-    ]);
+  int status = [CLLocationManager authorizationStatus];
+  if (status == kCLAuthorizationStatusAuthorizedAlways) {
+    authSuccessBlock(@{
+      @"access": @(status)
+    });
     return;
   }
-  errorBlock(@[
+  authErrorBlock(@[
                    RNCPositionError(RNCPositionErrorDenied, nil)
                    ]);
       return;
