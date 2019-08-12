@@ -49,8 +49,8 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   private final LocationListener mLocationListener = new LocationListener() {
     @Override
     public void onLocationChanged(Location location) {
-      getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class)
-          .emit("geolocationDidChange", locationToMap(location));
+      getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class).emit("geolocationDidChange",
+          locationToMap(location));
     }
 
     @Override
@@ -63,10 +63,12 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    public void onProviderEnabled(String provider) { }
+    public void onProviderEnabled(String provider) {
+    }
 
     @Override
-    public void onProviderDisabled(String provider) { }
+    public void onProviderDisabled(String provider) {
+    }
   };
 
   public GeolocationModule(ReactApplicationContext reactContext) {
@@ -84,11 +86,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     private final boolean highAccuracy;
     private final float distanceFilter;
 
-    private LocationOptions(
-      long timeout,
-      double maximumAge,
-      boolean highAccuracy,
-      float distanceFilter) {
+    private LocationOptions(long timeout, double maximumAge, boolean highAccuracy, float distanceFilter) {
       this.timeout = timeout;
       this.maximumAge = maximumAge;
       this.highAccuracy = highAccuracy;
@@ -96,34 +94,28 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     }
 
     private static LocationOptions fromReactMap(ReadableMap map) {
-      // precision might be dropped on timeout (double -> int conversion), but that's OK
-      long timeout =
-          map.hasKey("timeout") ? (long) map.getDouble("timeout") : Long.MAX_VALUE;
-      double maximumAge =
-          map.hasKey("maximumAge") ? map.getDouble("maximumAge") : Double.POSITIVE_INFINITY;
-      boolean highAccuracy =
-          map.hasKey("enableHighAccuracy") && map.getBoolean("enableHighAccuracy");
-      float distanceFilter = map.hasKey("distanceFilter") ?
-        (float) map.getDouble("distanceFilter") :
-        RCT_DEFAULT_LOCATION_ACCURACY;
+      // precision might be dropped on timeout (double -> int conversion), but that's
+      // OK
+      long timeout = map.hasKey("timeout") ? (long) map.getDouble("timeout") : Long.MAX_VALUE;
+      double maximumAge = map.hasKey("maximumAge") ? map.getDouble("maximumAge") : Double.POSITIVE_INFINITY;
+      boolean highAccuracy = map.hasKey("enableHighAccuracy") && map.getBoolean("enableHighAccuracy");
+      float distanceFilter = map.hasKey("distanceFilter") ? (float) map.getDouble("distanceFilter")
+          : RCT_DEFAULT_LOCATION_ACCURACY;
 
       return new LocationOptions(timeout, maximumAge, highAccuracy, distanceFilter);
     }
   }
 
   /**
-   * Get the current position. This can return almost immediately if the location is cached or
-   * request an update, which might take a while. This method also requests location
-   * permissions on API level 23 and above when needed.
+   * Get the current position. This can return almost immediately if the location
+   * is cached or request an update, which might take a while. This method also
+   * requests location permissions on API level 23 and above when needed.
    *
-   * @param options map containing optional arguments: timeout (millis), maximumAge (millis) and
-   *        highAccuracy (boolean)
+   * @param options map containing optional arguments: timeout (millis),
+   *                maximumAge (millis) and highAccuracy (boolean)
    */
   @ReactMethod
-  public void getCurrentPosition(
-      final ReadableMap options,
-      final Callback success,
-      final Callback error) {
+  public void getCurrentPosition(final ReadableMap options, final Callback success, final Callback error) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
 
@@ -134,7 +126,8 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
           if (result == "granted") {
             getCurrentLocationData(options, success, error);
           } else {
-            error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
+            error.invoke(
+                PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
           }
         }
       };
@@ -142,14 +135,16 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       final Callback onPermissionDenied = new Callback() {
         @Override
         public void invoke(Object... args) {
-          error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to request location permission."));
+          error.invoke(
+              PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to request location permission."));
         }
       };
 
       Callback onPermissionCheckFailed = new Callback() {
         @Override
         public void invoke(Object... args) {
-          error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to check location permission."));
+          error.invoke(
+              PositionError.buildError(PositionError.PERMISSION_DENIED, "Failed to check location permission."));
         }
       };
 
@@ -159,14 +154,16 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
           boolean hasPermission = (boolean) args[0];
 
           if (!hasPermission) {
-            perms.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionGranted, onPermissionDenied));
+            perms.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+                new PromiseImpl(onPermissionGranted, onPermissionDenied));
           } else {
             getCurrentLocationData(options, success, error);
           }
         }
       };
 
-      perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, new PromiseImpl(onPermissionChecked, onPermissionCheckFailed));
+      perms.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+          new PromiseImpl(onPermissionChecked, onPermissionCheckFailed));
       return;
     }
 
@@ -174,26 +171,21 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   /**
-   * Get the current position. This can return almost immediately if the location is cached or
-   * request an update, which might take a while.
+   * Get the current position. This can return almost immediately if the location
+   * is cached or request an update, which might take a while.
    *
-   * @param options map containing optional arguments: timeout (millis), maximumAge (millis) and
-   *        highAccuracy (boolean)
+   * @param options map containing optional arguments: timeout (millis),
+   *                maximumAge (millis) and highAccuracy (boolean)
    */
-  public void getCurrentLocationData(
-      ReadableMap options,
-      final Callback success,
-      Callback error) {
+  public void getCurrentLocationData(ReadableMap options, final Callback success, Callback error) {
     LocationOptions locationOptions = LocationOptions.fromReactMap(options);
 
     try {
-      LocationManager locationManager =
-          (LocationManager) getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+      LocationManager locationManager = (LocationManager) getReactApplicationContext()
+          .getSystemService(Context.LOCATION_SERVICE);
       String provider = getValidProvider(locationManager, locationOptions.highAccuracy);
       if (provider == null) {
-        error.invoke(
-            PositionError.buildError(
-                PositionError.POSITION_UNAVAILABLE, "No location provider available."));
+        error.invoke(PositionError.buildError(PositionError.POSITION_UNAVAILABLE, "No location provider available."));
         return;
       }
       Location location = locationManager.getLastKnownLocation(provider);
@@ -202,8 +194,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
         return;
       }
 
-      new SingleUpdateRequest(locationManager, provider, locationOptions.timeout, success, error)
-          .invoke(location);
+      new SingleUpdateRequest(locationManager, provider, locationOptions.timeout, success, error).invoke(location);
     } catch (SecurityException e) {
       throwLocationPermissionMissing(e);
     }
@@ -223,8 +214,8 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     LocationOptions locationOptions = LocationOptions.fromReactMap(options);
 
     try {
-      LocationManager locationManager =
-          (LocationManager) getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+      LocationManager locationManager = (LocationManager) getReactApplicationContext()
+          .getSystemService(Context.LOCATION_SERVICE);
       String provider = getValidProvider(locationManager, locationOptions.highAccuracy);
       if (provider == null) {
         emitError(PositionError.POSITION_UNAVAILABLE, "No location provider available.");
@@ -232,11 +223,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       }
       if (!provider.equals(mWatchedProvider)) {
         locationManager.removeUpdates(mLocationListener);
-        locationManager.requestLocationUpdates(
-          provider,
-          1000,
-          locationOptions.distanceFilter,
-          mLocationListener);
+        locationManager.requestLocationUpdates(provider, 1000, locationOptions.distanceFilter, mLocationListener);
       }
       mWatchedProvider = provider;
     } catch (SecurityException e) {
@@ -247,31 +234,44 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   /**
    * Stop listening for location updates.
    *
-   * NB: this is not balanced with {@link #startObserving}: any number of calls to that method will
-   * be canceled by just one call to this one.
+   * NB: this is not balanced with {@link #startObserving}: any number of calls to
+   * that method will be canceled by just one call to this one.
    */
   @ReactMethod
   public void stopObserving() {
-    LocationManager locationManager =
-        (LocationManager) getReactApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+    LocationManager locationManager = (LocationManager) getReactApplicationContext()
+        .getSystemService(Context.LOCATION_SERVICE);
     locationManager.removeUpdates(mLocationListener);
     mWatchedProvider = null;
   }
 
+  @ReactMethod
+  public void getLocationAuthorizationLevel(final ReadableMap options, final Callback success, final Callback error) {
+    int permissionLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION);
+    if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+      error.invoke(PositionError.buildError(PositionError.PERMISSION_DENIED, "Location permission was not granted."));
+      return;
+    }
+    WritableMap map = Arguments.createMap();
+    map.putBoolean("access", true);
+    success.invoke(map);
+    return;
+  }
+
   @Nullable
   private String getValidProvider(LocationManager locationManager, boolean highAccuracy) {
-    String provider =
-        highAccuracy ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
+    String provider = highAccuracy ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
     if (!locationManager.isProviderEnabled(provider)) {
-      provider = provider.equals(LocationManager.GPS_PROVIDER)
-          ? LocationManager.NETWORK_PROVIDER
+      provider = provider.equals(LocationManager.GPS_PROVIDER) ? LocationManager.NETWORK_PROVIDER
           : LocationManager.GPS_PROVIDER;
       if (!locationManager.isProviderEnabled(provider)) {
         return null;
       }
     }
     // If it's an enabled provider, but we don't have permissions, ignore it
-    int finePermission = ContextCompat.checkSelfPermission(getReactApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION);
+    int finePermission = ContextCompat.checkSelfPermission(getReactApplicationContext(),
+        android.Manifest.permission.ACCESS_FINE_LOCATION);
     if (provider.equals(LocationManager.GPS_PROVIDER) && finePermission != PackageManager.PERMISSION_GRANTED) {
       return null;
     }
@@ -298,18 +298,17 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
   }
 
   private void emitError(int code, String message) {
-    getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class)
-        .emit("geolocationError", PositionError.buildError(code, message));
+    getReactApplicationContext().getJSModule(RCTDeviceEventEmitter.class).emit("geolocationError",
+        PositionError.buildError(code, message));
   }
 
   /**
    * Provides a clearer exception message than the default one.
    */
   private static void throwLocationPermissionMissing(SecurityException e) {
-    throw new SecurityException(
-      "Looks like the app doesn't have the permission to access location.\n" +
-      "Add the following line to your app's AndroidManifest.xml:\n" +
-      "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />", e);
+    throw new SecurityException("Looks like the app doesn't have the permission to access location.\n"
+        + "Add the following line to your app's AndroidManifest.xml:\n"
+        + "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />", e);
   }
 
   private static class SingleUpdateRequest {
@@ -350,21 +349,20 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       }
 
       @Override
-      public void onStatusChanged(String provider, int status, Bundle extras) {}
+      public void onStatusChanged(String provider, int status, Bundle extras) {
+      }
 
       @Override
-      public void onProviderEnabled(String provider) {}
+      public void onProviderEnabled(String provider) {
+      }
 
       @Override
-      public void onProviderDisabled(String provider) {}
+      public void onProviderDisabled(String provider) {
+      }
     };
     private boolean mTriggered;
 
-    private SingleUpdateRequest(
-        LocationManager locationManager,
-        String provider,
-        long timeout,
-        Callback success,
+    private SingleUpdateRequest(LocationManager locationManager, String provider, long timeout, Callback success,
         Callback error) {
       mLocationManager = locationManager;
       mProvider = provider;
@@ -381,12 +379,15 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-    /** Determines whether one Location reading is better than the current Location fix
-    * taken from Android Examples https://developer.android.com/guide/topics/location/strategies.html
-    *
-    * @param location  The new Location that you want to evaluate
-    * @param currentBestLocation  The current Location fix, to which you want to compare the new one
-    */
+    /**
+     * Determines whether one Location reading is better than the current Location
+     * fix taken from Android Examples
+     * https://developer.android.com/guide/topics/location/strategies.html
+     *
+     * @param location            The new Location that you want to evaluate
+     * @param currentBestLocation The current Location fix, to which you want to
+     *                            compare the new one
+     */
     private boolean isBetterLocation(Location location, Location currentBestLocation) {
       if (currentBestLocation == null) {
         // A new location is always better than no location
@@ -399,11 +400,12 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
       boolean isNewer = timeDelta > 0;
 
-      // If it's been more than two minutes since the current location, use the new location
+      // If it's been more than two minutes since the current location, use the new
+      // location
       // because the user has likely moved
       if (isSignificantlyNewer) {
         return true;
-      // If the new location is more than two minutes older, it must be worse
+        // If the new location is more than two minutes older, it must be worse
       } else if (isSignificantlyOlder) {
         return false;
       }
@@ -415,8 +417,7 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       boolean isSignificantlyLessAccurate = accuracyDelta > 200;
 
       // Check if the old and new location are from the same provider
-      boolean isFromSameProvider = isSameProvider(location.getProvider(),
-      currentBestLocation.getProvider());
+      boolean isFromSameProvider = isSameProvider(location.getProvider(), currentBestLocation.getProvider());
 
       // Determine location quality using a combination of timeliness and accuracy
       if (isMoreAccurate) {
@@ -428,14 +429,14 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
       }
 
       return false;
-  }
+    }
 
-  /** Checks whether two providers are the same */
-  private boolean isSameProvider(String provider1, String provider2) {
-    if (provider1 == null) {
+    /** Checks whether two providers are the same */
+    private boolean isSameProvider(String provider1, String provider2) {
+      if (provider1 == null) {
         return provider2 == null;
       }
-    return provider1.equals(provider2);
+      return provider1.equals(provider2);
     }
   }
 }
