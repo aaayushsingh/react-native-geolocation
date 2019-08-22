@@ -1,6 +1,6 @@
 {
   "name": "@react-native-community/geolocation",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "React Native Geolocation Module for iOS and Android",
   "react-native": "js/index.js",
   "main": "lib/commonjs/index.js",
@@ -18,9 +18,10 @@
   "contributors": [
     "Janic Duplessis <janic@th3rdwave.coffee>",
     "Michal Chudziak <michal.chudziak@gmail.com>",
-    "Matt Oakes <hello@mattoakes.net>"
+    "Matt Oakes <hello@mattoakes.net>",
+    "Ayush Singh <ayush-_-singh@live.com>"
   ],
-  "homepage": "https://github.com/react-native-community/react-native-geolocation#README.md",
+  "homepage": "https://github.com/aaayushsingh/react-native-geolocation#README.md",
   "license": "MIT",
   "scripts": {
     "start": "react-native start",

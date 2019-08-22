@@ -259,6 +259,27 @@ public class GeolocationModule extends ReactContextBaseJavaModule {
     return;
   }
 
+  @ReactMethod
+  public void requestAuthorization() {
+    int permissionLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION);
+    final PermissionsModule perms = getReactApplicationContext().getNativeModule(PermissionsModule.class);
+
+    final Callback onPermissionGranted = new Callback() {
+      @Override
+      public void invoke(Object... args) {
+        return;
+      }
+    };
+
+    if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+      perms.requestPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+          new PromiseImpl(onPermissionGranted, onPermissionGranted));
+      return;
+    }
+    return;
+  }
+
   @Nullable
   private String getValidProvider(LocationManager locationManager, boolean highAccuracy) {
     String provider = highAccuracy ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
